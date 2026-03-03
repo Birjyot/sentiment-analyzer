@@ -2,7 +2,7 @@
 
 A full-stack NLP web application that scrapes financial news headlines, scores them using sentiment analysis, and correlates the results with live NSE/BSE stock price data to find predictive patterns.s
 
-**🔴 Live Demo →** [sentiment-analyzer.streamlit.app](https://sentiment-analyzer.streamlit.app)
+**🔴 Live Demo →** [sentiment-analyzer.streamlit.app](https://sentiment-analyzer-4rsyrig3o7thteadofz6w3.streamlit.app/)
 
 ---
 
