@@ -151,7 +151,7 @@ NSE_BSE_STOCKS = {
 
 # ── SIDEBAR ──
 with st.sidebar:
-    st.title("📰 Sentilytics")
+    st.title("📰 Sentiment Analyzer")
     st.markdown("---")
     st.subheader("🔍 Stock Settings")
 
@@ -176,18 +176,27 @@ with st.sidebar:
 
     st.markdown("---")
     st.subheader("🔑 NewsAPI Key")
-    api_key = st.text_input(
-        "Paste your API key",
-        value=os.environ.get("NEWS_API_KEY", ""),
-        type="password",
-        help="Free at newsapi.org. Leave blank for demo mode.",
-        placeholder="Leave blank for demo mode"
-    )
-    if not api_key:
-        st.info("🎮 Running in **demo mode** with synthetic data.")
+    _secret_key = ""
+    try:
+        _secret_key = st.secrets["NEWS_API_KEY"]
+    except Exception:
+        _secret_key = os.environ.get("NEWS_API_KEY", "")
+
+    if _secret_key:
+        api_key = _secret_key
+        st.success("🔑 API key loaded")
+    else:
+        api_key = st.text_input(
+            "Paste your API key",
+            type="password",
+            help="Free at newsapi.org. Leave blank for demo mode.",
+            placeholder="Leave blank for demo mode"
+        )
+        if not api_key:
+            st.info("🎮 Running in **demo mode** with synthetic data.")
 
     st.markdown("---")
-    analyze_btn = st.button("Analyze", use_container_width=True, type="primary")
+    analyze_btn = st.button("🚀 Analyze", use_container_width=True, type="primary")
     st.markdown("---")
     st.caption("Built with Python · Pandas · VADER NLP · Plotly · Streamlit")
     st.caption("by Birjyot Singh Sahiwal")
