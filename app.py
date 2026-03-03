@@ -151,7 +151,7 @@ NSE_BSE_STOCKS = {
 
 # ── SIDEBAR ──
 with st.sidebar:
-    st.title("📰 Sentiment Analyzer")
+    st.title("📰 Sentilytics")
     st.markdown("---")
     st.subheader("🔍 Stock Settings")
 
