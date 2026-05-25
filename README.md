@@ -1,144 +1,102 @@
-# 📰 News Sentiment vs Stock Price Analyzer
+# StockSentimentIQ — AI-Powered Stock Market Sentiment Analyzer
 
-A full-stack NLP web application that scrapes financial news headlines, scores them using sentiment analysis, and correlates the results with live NSE/BSE stock price data to find predictive patterns.s
-
-**🔴 Live Demo →** [sentiment-analyzer.streamlit.app](https://sentiment-analyzer-4rsyrig3o7thteadofz6w3.streamlit.app/)
+StockSentimentIQ is a production-grade Streamlit application that scores financial news headlines using **VADER NLP** (with finance-tuned lexicon boosters), visualizes **bullish / bearish / neutral** market sentiment, and generates **Wall Street-style insights** via **Groq Llama 3.3 70B**. Upload headline CSVs, analyze live news from Reuters/Bloomberg/CNBC/MarketWatch, or chat with your dataset using an AI market analyst.
 
 ---
 
-## 🧠 What Problem Does It Solve?
+## Features
 
-Investors and analysts read hundreds of news headlines daily about stocks — forming gut feelings about market direction. This process is **slow, biased, and unscalable**.
-
-This app **automates and quantifies** that process:
-- Scrapes real financial news headlines via NewsAPI
-- Scores each headline from **-1 (very negative)** to **+1 (very positive)** using NLP
-- Plots sentiment against actual NSE/BSE stock price movement
-- Calculates **same-day and 1-day lag correlation** — answering: *does today's news predict tomorrow's price?*
-
----
-
-## 📊 Features
-
-- 🔍 **40+ preset NSE/BSE stocks** or type any custom ticker
-- 📡 **Live news scraping** via NewsAPI (or demo mode without a key)
-- 🧠 **VADER NLP pipeline** — scores every headline individually
-- 📈 **Dual-axis chart** — sentiment bars overlaid with stock price (₹)
-- 🔵 **Scatter plot** with trend line — sentiment score vs daily return
-- 🥧 **Sentiment breakdown** — pie chart + daily volume bar chart
-- 📋 **Filterable headline table** — filter by sentiment, sort by score or date
-- 🔗 **Correlation metrics** — same-day and predictive 1-day lag scores
-- 🎮 **Demo mode** — fully functional without any API key
+| Tab | Description |
+|-----|-------------|
+| 📰 **Analyze Headline** | Score a single market headline with VADER — signal, strength, gauge chart |
+| 📊 **Batch Analysis** | Upload CSV (`text`, `ticker`, `source`) — KPIs, charts, filterable table, CSV export |
+| 🤖 **AI Market Insights** | Groq generates 4 investment insights, executive summary, market call, risk level |
+| 💬 **Chat with Data** | Ask questions about your uploaded headline dataset |
+| 🔴 **Live News** | Fetch live headlines via NewsAPI for major tickers |
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
-| Layer | Tools |
-|---|---|
-| Data Collection | `requests`, `yfinance`, NewsAPI |
-| NLP Pipeline | `vaderSentiment`, custom financial lexicon |
-| Data Processing | `pandas`, `numpy` |
-| Visualization | `plotly` |
-| Web App | `streamlit` |
-| Deployment | Streamlit Community Cloud |
+| Layer | Technology |
+|-------|------------|
+| Web UI | Streamlit |
+| NLP | VADER (`vaderSentiment`) + finance lexicon boosters |
+| AI | Groq API — `llama-3.3-70b-versatile` |
+| Charts | Plotly |
+| Data | pandas |
+| Live news | NewsAPI (`requests`) |
+| Config | python-dotenv |
 
 ---
 
-## 🚀 Run Locally
+## Setup
 
-```bash
-# 1. Clone the repo
-git clone https://github.com/yourusername/sentiment-analyzer.git
-cd sentiment-analyzer
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Birjyot/sentiment-analyzer.git
+   cd sentiment-analyzer
+   ```
 
-# 2. Create virtual environment
-python -m venv venv
-venv\Scripts\activate        # Windows
-source venv/bin/activate     # Mac/Linux
+2. **Create a virtual environment**
+   ```bash
+   python -m venv venv
+   venv\Scripts\activate        # Windows
+   source venv/bin/activate     # Mac/Linux
+   ```
 
-# 3. Install dependencies
-pip install -r requirements.txt
+3. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-# 4. Run the app
-streamlit run app.py
+4. **Configure API keys**
+   ```bash
+   copy .env.example .env       # Windows
+   cp .env.example .env         # Mac/Linux
+   ```
+   Edit `.env`:
+   - `GROQ_API_KEY` — **required** for AI Insights & Chat ([console.groq.com](https://console.groq.com))
+   - `NEWS_API_KEY` — optional for Live News tab ([newsapi.org](https://newsapi.org))
+
+5. **Run the app**
+   ```bash
+   streamlit run app.py
+   ```
+   Open **http://localhost:8501**
+
+---
+
+## CSV Format
+
+```csv
+text,ticker,source
+"Apple beats earnings expectations...",AAPL,Reuters
+"Fed signals more rate hikes...",SPY,Bloomberg
 ```
 
-App opens at `http://localhost:8501`
+Supported text column names: `text`, `headline`, `title`, `news`, `content`, `article`, `description`, `summary`, `message`.
 
 ---
 
-## 🔑 NewsAPI Key 
-
-The app runs with a key. For live headlines:
-
-1. Get a free key at [newsapi.org](https://newsapi.org) (takes 2 mins)
-2. Paste it in the sidebar when the app runs
-
----
-
-## 📁 Project Structure
+## Project Structure
 
 ```
 sentiment-analyzer/
-├── app.py                 # Streamlit frontend — all UI and charts
-├── data_fetcher.py        # Data layer — NewsAPI + yfinance fetching
-├── sentiment_engine.py    # NLP layer — VADER scoring + correlation
-├── requirements.txt       # Python dependencies
+├── app.py                 # Main Streamlit application
+├── services/
+│   ├── sentiment.py       # VADER + finance boosters
+│   ├── ai_service.py      # Groq market insights & chat
+│   ├── data_service.py    # CSV parsing
+│   └── news_service.py    # NewsAPI live headlines
+├── sample_data.csv        # 22 sample market headlines
+├── requirements.txt
+├── .env.example
 └── README.md
 ```
 
-Each file has a single responsibility — clean separation of concerns.
-
 ---
 
-## 💡 How It Works
+## Disclaimer
 
-```
-User selects stock + date range
-        ↓
-NewsAPI fetches headlines for that company
-        ↓
-VADER NLP scores each headline (-1 to +1)
-        ↓
-Scores aggregated to daily averages
-        ↓
-yfinance fetches actual NSE/BSE price data
-        ↓
-Pandas merges both on date
-        ↓
-Correlation calculated (same-day + 1-day lag)
-        ↓
-Plotly renders interactive dashboard
-```
-
----
-
-## 📈 Sample Output
-
-| Metric | Example Value |
-|---|---|
-| Headlines Analyzed | 90 |
-| Overall Sentiment | Positive (0.41) |
-| Positive News | 96.7% |
-| Same-Day Correlation | 0.312 |
-| 1-Day Lag Correlation | 0.284 |
-| Current Price | ₹2,450.30 |
-
----
-
-## 🌐 Supported Stocks
-
-Any stock listed on **NSE or BSE**:
-- NSE stocks → append `.NS` → e.g. `ZOMATO.NS`, `IRCTC.NS`
-- BSE stocks → append `.BO` → e.g. `RELIANCE.BO`
-
-40+ presets included (Reliance, TCS, HDFC Bank, Infosys, Zomato, Paytm, and more)
-
----
-
-## 📌 Context
-
-Built as an extension of data analysis work done during a finance internship. The project automates the manual process of reading financial news and estimating market sentiment — replacing gut-feel with an NLP-driven, data-backed correlation pipeline.
-
----
+**For educational purposes only. Not financial advice.** Sentiment scores and AI insights are research tools — not buy/sell recommendations. Always do your own due diligence before making investment decisions.
