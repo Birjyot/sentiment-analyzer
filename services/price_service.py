@@ -36,6 +36,9 @@ def fetch_live_quote(yahoo_symbol: str) -> dict:
         date_col = "Date" if "Date" in hist.columns else hist.columns[0]
         hist["date"] = pd.to_datetime(hist[date_col]).dt.tz_localize(None)
         hist["close"] = hist["Close"].round(2)
+        hist["open"] = hist["Open"].round(2)
+        hist["high"] = hist["High"].round(2)
+        hist["low"] = hist["Low"].round(2)
         hist["volume"] = hist["Volume"].fillna(0).astype(int)
 
         last = hist.iloc[-1]
@@ -67,7 +70,7 @@ def fetch_live_quote(yahoo_symbol: str) -> dict:
             "volume": int(last["volume"]),
             "currency": currency,
             "as_of": datetime.now().strftime("%Y-%m-%d %H:%M"),
-            "history": hist[["date", "close", "volume"]].copy(),
+            "history": hist[["date", "open", "high", "low", "close", "volume"]].copy(),
         }
     except Exception as e:
         return {
